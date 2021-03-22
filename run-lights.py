@@ -4,8 +4,10 @@ import datetime
 import blinkt
 import sys
 import getopt
+import json
 
-# check-lights.py 
+
+# run-lights.py 
 #
 # Checks the current time of day and sets the LED lights to the appropriate color
 # Based on the current time of day.
@@ -13,7 +15,6 @@ import getopt
 #
 # The lighting schedule is listed below the functions
 #
-
 
 # Intensity of the LEDs from 0.0 to 1.0
 intensity = 0.1
@@ -82,30 +83,39 @@ def main(argv):
 	dto = datetime.datetime.now()
 	time = dto.time()
 	
+	# Read in the sleep schedule from the file
+	scheduleFile = open('/home/pi/nap-schedule.json')
+	times = json.load(scheduleFile)
+	scheduleFile.close()
+	bedtimeStart = times['bedtimeStart'].split(":")
+	bedtimeEnd = times['bedtimeEnd'].split(":")
+	naptimeStart = times['naptimeStart'].split(":")
+	naptimeEnd = times['naptimeEnd'].split(":")
 	
 	#########################################
 	# Overnight Schedule
 	#########################################
 	# Have 2 clauses for crossing the overnight barrier
-	# night1 - From 7:40p to 12:00a - light --> yellow
-	# night2 - From 12:00a to 7:00a - light --> yellow
-	# morning - From 7:00a to 8:30a - light --> green
-	night1_start = datetime.time(19,40,0)
+	# Starts at start time and goes to midnight
+	# Starts from midnight and goes to end time
+	# Yellow light during night time
+	# Green light for 1 hour after night time
+	night1_start = datetime.time(bedtimeStart[0],bedtimeStart[1],0)
 	night1_end = datetime.time(0,0,0)
 	night2_start = datetime.time(0,0,0)
-	night2_end = datetime.time(7,0,0)
-	morning_start = datetime.time(7,0,0)
-	morning_end = datetime.time(8,30,0)
+	night2_end = datetime.time(bedtimeEnd[0],bedtimeEnd[1],0)
+	morning_start = datetime.time(bedtimeEnd[0],bedtimeEnd[1],0)
+	morning_end = datetime.time(bedtimeEnd[0]+1,bedtimeEnd[1],0)
 	
 	#########################################
 	# Nap Schedule
 	#########################################
-	# nap - From 12:00p to 2:00p - light --> yellow
-	# wake - From 2:00p to 3:00p - light --> green
-	nap_start = datetime.time(12,0,0)
-	nap_end = datetime.time(14,0,0)
-	wake_start = datetime.time(14,0,0)
-	wake_end = datetime.time(15,0,0)
+	# Yellow light during nap time
+	# Green light for 1 hour after nap time
+	nap_start = datetime.time(naptimeStart[0],naptimeStart[1],0)
+	nap_end = datetime.time(naptimeEnd[0],naptimeEnd[1],0)
+	wake_start = datetime.time(naptimeEnd[0],naptimeEnd[1],0)
+	wake_end = datetime.time(naptimeEnd[0]+1,naptimeEnd[1],0)
 	
 	# Lights are off otherwise
 	
