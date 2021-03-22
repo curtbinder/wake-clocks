@@ -88,9 +88,17 @@ def main(argv):
 	times = json.load(scheduleFile)
 	scheduleFile.close()
 	bedtimeStart = times['bedtimeStart'].split(":")
+	bedStartHour = int(bedtimeStart[0])
+	bedStartMinute = int(bedtimeStart[1])
 	bedtimeEnd = times['bedtimeEnd'].split(":")
+	bedEndHour = int(bedtimeEnd[0])
+	bedEndMinute = int(bedtimeEnd[1])
 	naptimeStart = times['naptimeStart'].split(":")
+	napStartHour = int(naptimeStart[0])
+	napStartMinute = int(naptimeStart[1])
 	naptimeEnd = times['naptimeEnd'].split(":")
+	napEndHour = int(naptimeEnd[0])
+	napEndMinute = int(naptimeEnd[1])
 	
 	#########################################
 	# Overnight Schedule
@@ -100,22 +108,22 @@ def main(argv):
 	# Starts from midnight and goes to end time
 	# Yellow light during night time
 	# Green light for 1 hour after night time
-	night1_start = datetime.time(bedtimeStart[0],bedtimeStart[1],0)
+	night1_start = datetime.time(bedStartHour,bedStartMinute,0)
 	night1_end = datetime.time(0,0,0)
 	night2_start = datetime.time(0,0,0)
-	night2_end = datetime.time(bedtimeEnd[0],bedtimeEnd[1],0)
-	morning_start = datetime.time(bedtimeEnd[0],bedtimeEnd[1],0)
-	morning_end = datetime.time(bedtimeEnd[0]+1,bedtimeEnd[1],0)
+	night2_end = datetime.time(bedEndHour,bedEndMinute,0)
+	morning_start = datetime.time(bedEndHour,bedEndMinute,0)
+	morning_end = datetime.time(bedEndHour+1,bedEndMinute,0)
 	
 	#########################################
 	# Nap Schedule
 	#########################################
 	# Yellow light during nap time
 	# Green light for 1 hour after nap time
-	nap_start = datetime.time(naptimeStart[0],naptimeStart[1],0)
-	nap_end = datetime.time(naptimeEnd[0],naptimeEnd[1],0)
-	wake_start = datetime.time(naptimeEnd[0],naptimeEnd[1],0)
-	wake_end = datetime.time(naptimeEnd[0]+1,naptimeEnd[1],0)
+	nap_start = datetime.time(napStartHour,napStartMinute,0)
+	nap_end = datetime.time(napEndHour,napEndMinute,0)
+	wake_start = datetime.time(napEndHour,napEndMinute,0)
+	wake_end = datetime.time(napEndHour+1,napEndMinute,0)
 	
 	# Lights are off otherwise
 	
