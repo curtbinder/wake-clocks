@@ -84,7 +84,7 @@ def main(argv):
 	time = dto.time()
 	
 	# Read in the sleep schedule from the file
-	scheduleFile = open('/home/pi/nap-schedule.json')
+	scheduleFile = open('/var/www/html/nap-schedule.json')
 	times = json.load(scheduleFile)
 	scheduleFile.close()
 	bedtimeStart = times['bedtimeStart'].split(":")
